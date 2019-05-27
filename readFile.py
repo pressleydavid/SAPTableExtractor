@@ -4,13 +4,12 @@ import json
 from searchFiles import find
 
 
-
 # .docx files are XML underneath. zipfile gets at the directory which contains the document.xml
 def get_word_xml(docx_filename):
-   with open(docx_filename) as f:
-      zip = zipfile.ZipFile(f)
-      xml_content = zip.read('word/document.xml')
-   return xml_content
+    docx = zipfile.ZipFile(docx_filename)
+    return docx.read('word/document.xml')
+
+
 
 # create an ElementTree from a string
 def get_xml_tree(xml_string):
@@ -21,7 +20,7 @@ def get_xml_tree(xml_string):
 namespaces = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
 
 # Open and parse the document
-SAP = get_xml_tree(get_word_xml('/Users/David/projects/XML/Statistical Analysis Plan - TDE-PH-310_20151223 clean.docx'))
+SAP = get_xml_tree(get_word_xml('/Users/david/PycharmProjects/SAPTableExtractor/Statistical Analysis Plan - TDE-PH-310_20151223 clean.docx'))
 # uncomment and print to have a look
 # print etree.tostring(SAP, pretty_print=True)
 
@@ -56,16 +55,16 @@ for tr in figures:
     F.append(cat)
 
 # put lists into dictionaries to further create JSON output (and text file)
-Tdict = dict(T[i:i+2] for i in range(0, len(T), 2))
-print Tdict
-find('*.pdf', '/Users/David/projects/XML/output', Tdict)
-print json.dumps(Tdict, sort_keys=True, indent=4, separators=(',', ': '))
-Ldict = dict(L[i:i+2] for i in range(2, len(L), 2))
-print Ldict
-print json.dumps(Ldict, sort_keys=True, indent=4, separators=(',', ': '))
-Fdict = dict(F[i:i+2] for i in range(2, len(F), 2))
-print Fdict
-print json.dumps(Fdict, sort_keys=True, indent=4, separators=(',', ': '))
+Tdict = dict(T[i:i+2] for i in list(range(0, len(T), 2)))
+print(Tdict)
+# find('*.pdf', '/Users/David/projects/XML/output', Tdict)
+print((json.dumps(Tdict, sort_keys=True, indent=4, separators=(',', ': '))))
+Ldict = dict(L[i:i+2] for i in list(range(2, len(L), 2)))
+print(Ldict)
+print((json.dumps(Ldict, sort_keys=True, indent=4, separators=(',', ': '))))
+Fdict = dict(F[i:i+2] for i in list(range(2, len(F), 2)))
+print(Fdict)
+print((json.dumps(Fdict, sort_keys=True, indent=4, separators=(',', ': '))))
 
 #  create tab separated output files, ensuring that encoding is used for expected results
 outfile = open('Tables', 'w' )
